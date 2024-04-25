@@ -1,0 +1,75 @@
+<!-- activity_main.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context="com.example.diplomka_test.MainActivity">
+
+    <TextView
+        android:id="@+id/nadpisTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="35sp"
+        android:text="Trenažerová aplikace pro měření přesnosti doteku"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/obtiznostTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="Vyber obtížnost:"
+        android:layout_below="@id/nadpisTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/obtiznostTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/startButtonEasy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jednoduchá"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/startButtonMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Střední"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/startButtonHard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Těžká"
+            android:textSize="20sp"
+            android:padding="10dp"/>
+
+    </LinearLayout>
+
+    <!-- Upozornění -->
+    <TextView
+        android:id="@+id/upozorneniTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upozornění: Ujistěte se, že je vypnuté automatické otáčení displeje!"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:textSize="20sp"/>
+
+</RelativeLayout>
