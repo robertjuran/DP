@@ -14,15 +14,16 @@ import kotlin.random.Random
 
 class GameActivity : AppCompatActivity() {
 
-    private companion object {
+    companion object {
         const val MATRIX_SIZE = 5
-        const val MAX_ATTEMPTS = 10
+        const val DEFAULT_MAX_ATTEMPTS = 10
     }
 
     private lateinit var buttons: Array<Array<MyButton>>
     private var totalAttempts = 0
     private var successfulAttempts = 0
     private var litButton: MyButton? = null
+    private var maxAttempts = 0
 
     // Časové proměnné pro měření času mezi kliknutími
     private var startTime: Long = 0
@@ -36,6 +37,7 @@ class GameActivity : AppCompatActivity() {
         setContentView(R.layout.activity_game)
 
         val matrixSize = intent.getIntExtra("MATRIX_SIZE", 3)
+        maxAttempts = intent.getIntExtra("MAX_ATTEMPTS", DEFAULT_MAX_ATTEMPTS)
 
         createMatrix(matrixSize)
 
@@ -93,7 +95,7 @@ class GameActivity : AppCompatActivity() {
         totalAttempts++
 
         if (button != litButton) {
-            if (totalAttempts >= MAX_ATTEMPTS) {
+            if (totalAttempts >= maxAttempts) {
                 endGame()
             }
             return
@@ -108,7 +110,7 @@ class GameActivity : AppCompatActivity() {
         clickCount++
         startTime = currentTime
 
-        if (totalAttempts < MAX_ATTEMPTS) {
+        if (totalAttempts < maxAttempts) {
             lightRandomButton()
         } else {
             endGame()
