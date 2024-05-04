@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Diplomka_test</string>
+
+    <string-array name="sort_options">
+        <item>Jména</item>
+        <item>Počtu pokusů</item>
+        <item>Úspěšných pokusů</item>
+        <item>Průměrného času</item>
+    </string-array>
 </resources>
+

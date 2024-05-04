@@ -25,6 +25,9 @@
 
             <!-- Add exported attribute for Android 12 compatibility -->
         </activity>
+
+        <activity android:name=".LeaderboardActivity" />
+
     </application>
 
 </manifest>

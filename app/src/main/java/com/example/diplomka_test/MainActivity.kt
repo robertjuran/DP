@@ -28,17 +28,34 @@ class MainActivity : AppCompatActivity() {
         startButtonHard.setOnClickListener {
             startGame(20)
         }
+        val showLeaderboardButton: Button = findViewById(R.id.showLeaderboardButton)
+        showLeaderboardButton.setOnClickListener {
+            openLeaderboard()
+        }
+
+
+
     }
 
     private fun startGame(matrixSize: Int) {
         val intent = Intent(this, GameActivity::class.java)
         intent.putExtra("MATRIX_SIZE", matrixSize)
 
+        val nameEditText: EditText = findViewById(R.id.userNameEditText)
+        val userName = nameEditText.text.toString()
+        // Předej jméno uživatele do GameActivity
+        intent.putExtra("USER_NAME", userName)
+
         // Získání počtu pokusů z EditText
         val pokusyEditText: EditText = findViewById(R.id.pokusyEditText)
         val početPokusu = pokusyEditText.text.toString().toIntOrNull() ?: GameActivity.DEFAULT_MAX_ATTEMPTS
         intent.putExtra("MAX_ATTEMPTS", početPokusu)
 
+        startActivity(intent)
+    }
+
+    private fun openLeaderboard() {
+        val intent = Intent(this, LeaderboardActivity::class.java)
         startActivity(intent)
     }
 }

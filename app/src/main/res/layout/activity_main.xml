@@ -59,6 +59,18 @@
             android:padding="10dp"/>
 
     </LinearLayout>
+    <EditText
+        android:id="@+id/userNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Zadejte své jméno"
+        android:inputType="text"
+        android:textSize="24sp"
+        android:layout_above="@+id/pokusyEditText"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="512dp"
+        android:gravity="center_horizontal"/>
 
     <EditText
         android:id="@+id/pokusyEditText"
@@ -67,7 +79,18 @@
         android:inputType="number"
         android:hint="Zde zadejte počet pokusů (výchozí je 10)"
         android:textSize="24sp"
+        android:layout_above="@+id/showLeaderboardButton"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="320dp"
+        android:gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/showLeaderboardButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/upozorneniTextView"
+        android:text="Zobrazit žebříček"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="256dp"

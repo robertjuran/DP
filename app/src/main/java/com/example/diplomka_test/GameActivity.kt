@@ -11,6 +11,8 @@ import android.widget.GridLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
+import java.io.*
+
 
 class GameActivity : AppCompatActivity() {
 
@@ -24,17 +26,21 @@ class GameActivity : AppCompatActivity() {
     private var successfulAttempts = 0
     private var litButton: MyButton? = null
     private var maxAttempts = 0
+    private lateinit var userName: String
 
     // Časové proměnné pro měření času mezi kliknutími
     private var startTime: Long = 0
     private var totalTime: Long = 0
     private var clickCount: Int = 0
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         supportActionBar?.hide()
         setContentView(R.layout.activity_game)
+
+        userName = intent.getStringExtra("USER_NAME") ?: "Unknown"
 
         val matrixSize = intent.getIntExtra("MATRIX_SIZE", 3)
         maxAttempts = intent.getIntExtra("MAX_ATTEMPTS", DEFAULT_MAX_ATTEMPTS)
@@ -133,6 +139,9 @@ class GameActivity : AppCompatActivity() {
         val averageTimeTextView: TextView = findViewById(R.id.averageTimeTextView)
         averageTimeTextView.text = String.format("Průměrný čas kliknutí: %.2f ms", averageTimePerClick)
 
+        // Uložení výsledku do souboru
+        val userResult = DataManager.UserResult(userName, totalAttempts, successfulAttempts, averageTimePerClick.toLong())
+        DataManager.saveResultToFile(userResult, this) // Předáváme aktuální kontext
         val endButton: Button = findViewById(R.id.endButton)
         endButton.text = "Zpět na menu"
         endButton.visibility = View.VISIBLE
@@ -140,6 +149,7 @@ class GameActivity : AppCompatActivity() {
             returnToMenu()
         }
     }
+
 
     private fun returnToMenu() {
         val intent = Intent(this, MainActivity::class.java)
@@ -168,4 +178,52 @@ class MyButton(context: Context, val row: Int, val col: Int) : androidx.appcompa
     fun turnOff() {
         setBackgroundColor(Color.WHITE)
     }
+}
+
+object DataManager {
+    private const val FILENAME = "user_results.txt"
+
+    // Třída UserResult pro ukládání výsledků
+    data class UserResult(
+        val userName: String,
+        val totalAttempts: Int,
+        val successfulAttempts: Int,
+        val averageSpeed: Long // Čas v ms, takže dáme long
+    )
+
+    fun saveResultToFile(result: UserResult, context: Context) {
+        val line = "${result.userName},${result.totalAttempts},${result.successfulAttempts},${result.averageSpeed}"
+        try {
+            context.openFileOutput(FILENAME, Context.MODE_APPEND).use {
+                it.write((line + "\n").toByteArray())
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    /*
+    fun loadResultsFromFile(context: Context): List<UserResult> {
+        val results = mutableListOf<UserResult>()
+        try {
+            context.openFileInput(FILENAME).bufferedReader().useLines { lines ->
+                lines.forEach { line ->
+                    val parts = line.split(",")
+                    if (parts.size == 4) {
+                        val userName = parts[0]
+                        val totalAttempts = parts[1].toInt()
+                        val successfulAttempts = parts[2].toInt()
+                        val averageSpeed = parts[3].toLong()
+                        results.add(UserResult(userName, totalAttempts, successfulAttempts, averageSpeed))
+                    }
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            // Pokud soubor neexistuje, není co načítat
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return results
+    }
+     */
 }

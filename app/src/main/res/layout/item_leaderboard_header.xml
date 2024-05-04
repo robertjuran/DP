@@ -1,0 +1,43 @@
+<!-- item_leaderboard_header.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/userNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="18sp"
+        android:text="Jméno"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/attemptsTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="16sp"
+        android:text="Počet Pokusů"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/successfulAttemptsTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="16sp"
+        android:text="Úspěšné pokusy"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/averageSpeedTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="16sp"
+        android:text="Průměrný čas"
+        android:gravity="center"/>
+
+</LinearLayout>
