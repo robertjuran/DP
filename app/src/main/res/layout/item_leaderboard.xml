@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="18sp"
-        android:text="Jméno"
-        android:gravity="center"/>
+        android:text="Jméno" />
 
     <TextView
         android:id="@+id/attemptsTextView"
@@ -19,8 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="16sp"
-        android:text="Počet pokusů"
-        android:gravity="center"/>
+        android:text="Počet pokusů: 0" />
 
     <TextView
         android:id="@+id/successfulAttemptsTextView"
@@ -28,8 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="16sp"
-        android:text="Úspěšné pokusy"
-        android:gravity="center"/>
+        android:text="Úspěšné pokusy: 0" />
 
     <TextView
         android:id="@+id/averageSpeedTextView"
@@ -37,7 +34,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="16sp"
-        android:text="Průměrný čas"
-        android:gravity="center"/>
+        android:text="Průměrný čas: 0 ms" />
 
 </LinearLayout>

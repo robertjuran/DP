@@ -134,13 +134,16 @@ class GameActivity : AppCompatActivity() {
         val accuracyTextView: TextView = findViewById(R.id.accuracyTextView)
         accuracyTextView.text = String.format("Přesnost: %.2f %%", accuracy)
 
+        // Získání hodnoty matrixSize
+        val matrixSize = intent.getIntExtra("MATRIX_SIZE", 3)
+
         // Výpočet průměrného času kliknutí a zobrazení na konci hry
         val averageTimePerClick = if (clickCount > 0) totalTime.toDouble() / clickCount else 0.0
         val averageTimeTextView: TextView = findViewById(R.id.averageTimeTextView)
         averageTimeTextView.text = String.format("Průměrný čas kliknutí: %.2f ms", averageTimePerClick)
 
         // Uložení výsledku do souboru
-        val userResult = DataManager.UserResult(userName, totalAttempts, successfulAttempts, averageTimePerClick.toLong())
+        val userResult = DataManager.UserResult(userName, matrixSize, totalAttempts, successfulAttempts, averageTimePerClick.toLong())
         DataManager.saveResultToFile(userResult, this) // Předáváme aktuální kontext
         val endButton: Button = findViewById(R.id.endButton)
         endButton.text = "Zpět na menu"
@@ -186,13 +189,14 @@ object DataManager {
     // Třída UserResult pro ukládání výsledků
     data class UserResult(
         val userName: String,
+        val matrixSize: Int,
         val totalAttempts: Int,
         val successfulAttempts: Int,
-        val averageSpeed: Long // Čas v ms, takže dáme long
+        val averageSpeed: Long
     )
 
     fun saveResultToFile(result: UserResult, context: Context) {
-        val line = "${result.userName},${result.totalAttempts},${result.successfulAttempts},${result.averageSpeed}"
+        val line = "${result.userName},${result.matrixSize},${result.totalAttempts},${result.successfulAttempts},${result.averageSpeed}"
         try {
             context.openFileOutput(FILENAME, Context.MODE_APPEND).use {
                 it.write((line + "\n").toByteArray())

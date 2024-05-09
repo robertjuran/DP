@@ -2,8 +2,8 @@ package com.example.diplomka_test
 
 data class User(
     val name: String,
+    val matrixSize: Int,
     var totalAttempts: Int,
     var successfulAttempts: Int,
-    // var totalTime: Long,
     val averageSpeed: Long
 )

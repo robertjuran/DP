@@ -4,52 +4,78 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.FileNotFoundException
+import android.widget.Toast
+import android.widget.ArrayAdapter
+import android.widget.AdapterView
+import android.widget.Spinner
+
 
 class LeaderboardActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var leaderboardAdapter: LeaderboardAdapter
-    private lateinit var sortBySpinner: Spinner
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var leaderboardAdapter: RecyclerView.Adapter<*>
+    private lateinit var sortBySpinner: Spinner // Přidáno
+    private var currentMatrixSize: Int = 0 // Přidáno
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
-        supportActionBar?.hide()
         setContentView(R.layout.activity_leaderboard)
 
         recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
 
-        sortBySpinner = findViewById(R.id.sortBySpinner) // Initialize sortBySpinner
+        // Inicializace spinneru
+        sortBySpinner = findViewById(R.id.sortBySpinner)
 
-        val sortByOptions = arrayOf("Jméno", "Počet Pokusů", "Úspěšné pokusy", "Průměrný čas")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sortByOptions)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        sortBySpinner.adapter = adapter
+        // Nastavení posluchače pro spinner
+        setupSpinner() // Přidáno
 
+        val easyButton: Button = findViewById(R.id.easyButton)
+        val mediumButton: Button = findViewById(R.id.mediumButton)
+        val hardButton: Button = findViewById(R.id.hardButton)
+        val clearButton: Button = findViewById(R.id.clearButton)
+
+        easyButton.setOnClickListener {
+            currentMatrixSize = 3
+            loadUsersByMatrixSize(3)
+        }
+
+        mediumButton.setOnClickListener {
+            currentMatrixSize = 10
+            loadUsersByMatrixSize(10)
+        }
+
+        hardButton.setOnClickListener {
+            currentMatrixSize = 20
+            loadUsersByMatrixSize(20)
+        }
+
+        clearButton.setOnClickListener {
+            clearResults()
+        }
+
+        loadAllUsers()
+    }
+
+
+    private fun loadAllUsers() {
         val users = loadUsersFromStorage()
-
         leaderboardAdapter = LeaderboardAdapter(users)
         recyclerView.adapter = leaderboardAdapter
+    }
 
-        leaderboardAdapter.setShowHeader(true) // Zobrazit hlavičku
-
-        sortBySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Sort data based on selected option
-                val selectedSortOption = sortByOptions[position]
-                leaderboardAdapter.sortBy(selectedSortOption)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing
-            }
-        }
+    private fun loadUsersByMatrixSize(matrixSize: Int) {
+        val users = loadUsersFromStorage().filter { it.matrixSize == matrixSize }
+        leaderboardAdapter = LeaderboardAdapter(users)
+        recyclerView.adapter = leaderboardAdapter
     }
 
     private fun loadUsersFromStorage(): List<User> {
@@ -59,85 +85,128 @@ class LeaderboardActivity : AppCompatActivity() {
             applicationContext.openFileInput(fileName).bufferedReader().useLines { lines ->
                 lines.forEach { line ->
                     val parts = line.split(",")
-                    if (parts.size == 4) {
+                    if (parts.size == 5) {
                         val userName = parts[0]
-                        val totalAttempts = parts[1].toInt()
-                        val successfulAttempts = parts[2].toInt()
-                        val averageSpeed = parts[3].toLong()
-                        users.add(User(userName, totalAttempts, successfulAttempts, averageSpeed))
+                        val matrixSize = parts[1].toInt()
+                        val totalAttempts = parts[2].toInt()
+                        val successfulAttempts = parts[3].toInt()
+                        val averageSpeed = parts[4].toLong()
+                        users.add(User(userName, matrixSize, totalAttempts, successfulAttempts, averageSpeed))
                     }
                 }
             }
         } catch (e: FileNotFoundException) {
-            // File does not exist or is empty
+            // Soubor neexistuje nebo je prázdný
         }
         return users
     }
 
-    class LeaderboardAdapter(private var users: List<User>) :
+    private fun clearResults() {
+        val fileName = "user_results.txt"
+        try {
+            applicationContext.deleteFile(fileName)
+            Toast.makeText(this, "Výsledky byly úspěšně smazány.", Toast.LENGTH_SHORT).show()
+            loadAllUsers()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Nastala chyba při mazání výsledků.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    class LeaderboardAdapter(private val users: List<User>) :
         RecyclerView.Adapter<LeaderboardAdapter.LeaderboardViewHolder>() {
 
-        private var showHeader = true // Zobrazovat hlavičku
-
-        fun setShowHeader(show: Boolean) {
-            showHeader = show
-            notifyDataSetChanged() // Aktualizovat zobrazení
-        }
-
-        fun sortBy(option: String) {
-            // Sort data based on the selected option
-            when (option) {
-                "Jméno" -> users = users.sortedBy { it.name }
-                "Počet Pokusů" -> users = users.sortedByDescending { it.totalAttempts }
-                "Úspěšné pokusy" -> users = users.sortedByDescending { it.successfulAttempts }
-                "Průměrný čas" -> users = users.sortedBy { it.averageSpeed }
-            }
-            notifyDataSetChanged()
-        }
-
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeaderboardViewHolder {
-            val layoutResId = if (viewType == VIEW_TYPE_HEADER) R.layout.item_leaderboard_header else R.layout.item_leaderboard
-            val view = LayoutInflater.from(parent.context).inflate(layoutResId, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_leaderboard, parent, false)
             return LeaderboardViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: LeaderboardViewHolder, position: Int) {
-            if (getItemViewType(position) == VIEW_TYPE_HEADER) {
-                holder.bindHeader() // Nastavit hlavičku
-            } else {
-                val user = users[position - if (showHeader) 1 else 0]
-                holder.bind(user)
-            }
+            val user = users[position]
+            holder.bind(user)
         }
 
         override fun getItemCount(): Int {
-            return users.size + if (showHeader) 1 else 0
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            return if (position == 0 && showHeader) VIEW_TYPE_HEADER else VIEW_TYPE_ITEM
+            return users.size
         }
 
         inner class LeaderboardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             fun bind(user: User) {
                 itemView.findViewById<TextView>(R.id.userNameTextView).text = user.name
-                itemView.findViewById<TextView>(R.id.attemptsTextView).text = user.totalAttempts.toString()
-                itemView.findViewById<TextView>(R.id.successfulAttemptsTextView).text = user.successfulAttempts.toString()
-                itemView.findViewById<TextView>(R.id.averageSpeedTextView).text = "${user.averageSpeed} ms"
-            }
-
-            fun bindHeader() {
-                itemView.findViewById<TextView>(R.id.userNameTextView).text = "Jméno"
-                itemView.findViewById<TextView>(R.id.attemptsTextView).text = "Počet Pokusů"
-                itemView.findViewById<TextView>(R.id.successfulAttemptsTextView).text = "Úspěšné pokusy"
-                itemView.findViewById<TextView>(R.id.averageSpeedTextView).text = "Průměrný čas"
+                itemView.findViewById<TextView>(R.id.attemptsTextView).text = "Počet pokusů: ${user.totalAttempts}"
+                itemView.findViewById<TextView>(R.id.successfulAttemptsTextView).text = "Úspěšné pokusy: ${user.successfulAttempts}"
+                itemView.findViewById<TextView>(R.id.averageSpeedTextView).text = "Průměrný čas: ${user.averageSpeed} ms"
             }
         }
 
-        companion object {
-            private const val VIEW_TYPE_HEADER = 0
-            private const val VIEW_TYPE_ITEM = 1
+    }
+
+    // Vytvořte enum třídu pro možné hodnoty řazení
+    enum class SortByOption {
+        USER_NAME,
+        TOTAL_ATTEMPTS,
+        SUCCESSFUL_ATTEMPTS,
+        AVERAGE_SPEED
+    }
+
+    // Vytvořte globální proměnnou pro uchování aktuálně vybrané možnosti řazení
+    private var currentSortOption = SortByOption.USER_NAME
+
+    // V metodě setupSpinner() nastavte posluchače pro změnu výběru ve spinneru
+    private fun setupSpinner() {
+        val sortByOptions = arrayOf("Jméno", "Počet Pokusů", "Úspěšné pokusy", "Průměrný čas")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sortByOptions)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        sortBySpinner.adapter = adapter
+
+        // Nastavení posluchače pro změnu výběru ve spinneru
+        sortBySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val sortByOption = when (position) {
+                    0 -> SortByOption.USER_NAME
+                    1 -> SortByOption.TOTAL_ATTEMPTS
+                    2 -> SortByOption.SUCCESSFUL_ATTEMPTS
+                    3 -> SortByOption.AVERAGE_SPEED
+                    else -> SortByOption.USER_NAME
+                }
+                currentSortOption = sortByOption
+                // Zde implementujte logiku pro řazení žebříčku podle vybrané možnosti
+                sortLeaderboard()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Nepotřebujeme implementovat v této aplikaci
+            }
         }
     }
-}
 
+    // Metoda pro řazení seznamu uživatelů podle aktuálního výběru ve spinneru
+    private fun sortLeaderboard() {
+        val users = if (currentMatrixSize != 0) {
+            loadUsersFromStorage().filter { it.matrixSize == currentMatrixSize }.toMutableList()
+        } else {
+            loadUsersFromStorage().toMutableList()
+        }
+
+        users.sortWith(compareBy<User> {
+            when (currentSortOption) {
+                SortByOption.USER_NAME -> it.name
+                SortByOption.TOTAL_ATTEMPTS -> -it.totalAttempts
+                SortByOption.SUCCESSFUL_ATTEMPTS -> -it.successfulAttempts
+                SortByOption.AVERAGE_SPEED -> it.averageSpeed
+            }
+        }.thenBy {
+            when (currentSortOption) {
+                SortByOption.USER_NAME -> ""
+                SortByOption.TOTAL_ATTEMPTS -> 0
+                SortByOption.SUCCESSFUL_ATTEMPTS -> 0
+                SortByOption.AVERAGE_SPEED -> -it.averageSpeed
+            }
+        })
+
+        leaderboardAdapter = LeaderboardAdapter(users)
+        recyclerView.adapter = leaderboardAdapter
+    }
+
+
+}
