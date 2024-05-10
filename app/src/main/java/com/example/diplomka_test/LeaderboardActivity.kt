@@ -21,8 +21,8 @@ class LeaderboardActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var leaderboardAdapter: RecyclerView.Adapter<*>
-    private lateinit var sortBySpinner: Spinner // Přidáno
-    private var currentMatrixSize: Int = 0 // Přidáno
+    private lateinit var sortBySpinner: Spinner
+    private var currentMatrixSize: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,17 +32,18 @@ class LeaderboardActivity : AppCompatActivity() {
         layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
-        // Inicializace spinneru
+        // Inicializace spinneru pro filtraci podle výsledku
         sortBySpinner = findViewById(R.id.sortBySpinner)
 
         // Nastavení posluchače pro spinner
-        setupSpinner() // Přidáno
+        setupSpinner()
 
         val easyButton: Button = findViewById(R.id.easyButton)
         val mediumButton: Button = findViewById(R.id.mediumButton)
         val hardButton: Button = findViewById(R.id.hardButton)
         val clearButton: Button = findViewById(R.id.clearButton)
 
+        // Tlačítka pro filtraci leaderboardu podle obtížnosti
         easyButton.setOnClickListener {
             currentMatrixSize = 3
             loadUsersByMatrixSize(3)
@@ -58,26 +59,31 @@ class LeaderboardActivity : AppCompatActivity() {
             loadUsersByMatrixSize(20)
         }
 
+        // Tlačítko pro vymazání výsledků
         clearButton.setOnClickListener {
             clearResults()
         }
 
+        // Bez vybrání obtížnosti zobrazí všechny
         loadAllUsers()
     }
 
 
+    / Fce pro zobrazení všech výsledků
     private fun loadAllUsers() {
         val users = loadUsersFromStorage()
         leaderboardAdapter = LeaderboardAdapter(users)
         recyclerView.adapter = leaderboardAdapter
     }
 
+    // Fce pro filtraci výsledků podle velikosti matice (obtížnosti)
     private fun loadUsersByMatrixSize(matrixSize: Int) {
         val users = loadUsersFromStorage().filter { it.matrixSize == matrixSize }
         leaderboardAdapter = LeaderboardAdapter(users)
         recyclerView.adapter = leaderboardAdapter
     }
 
+    // Fce pro načtení výsledků z .txt
     private fun loadUsersFromStorage(): List<User> {
         val users = mutableListOf<User>()
         try {
@@ -101,6 +107,7 @@ class LeaderboardActivity : AppCompatActivity() {
         return users
     }
 
+    // Fce pro vymazání obsahu .txt s výsledky
     private fun clearResults() {
         val fileName = "user_results.txt"
         try {
@@ -141,7 +148,7 @@ class LeaderboardActivity : AppCompatActivity() {
 
     }
 
-    // Vytvořte enum třídu pro možné hodnoty řazení
+    // Enum třída pro možné hodnoty řazení
     enum class SortByOption {
         USER_NAME,
         TOTAL_ATTEMPTS,
@@ -149,10 +156,10 @@ class LeaderboardActivity : AppCompatActivity() {
         AVERAGE_SPEED
     }
 
-    // Vytvořte globální proměnnou pro uchování aktuálně vybrané možnosti řazení
+    // Globální proměnná pro uchování aktuálně vybrané možnosti řazení
     private var currentSortOption = SortByOption.USER_NAME
 
-    // V metodě setupSpinner() nastavte posluchače pro změnu výběru ve spinneru
+    // V metodě setupSpinner() nastavení posluchače pro změnu výběru ve spinneru
     private fun setupSpinner() {
         val sortByOptions = arrayOf("Jméno", "Počet Pokusů", "Úspěšné pokusy", "Průměrný čas")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sortByOptions)
@@ -170,12 +177,12 @@ class LeaderboardActivity : AppCompatActivity() {
                     else -> SortByOption.USER_NAME
                 }
                 currentSortOption = sortByOption
-                // Zde implementujte logiku pro řazení žebříčku podle vybrané možnosti
+                // Řazení žebříčku podle vybrané možnosti
                 sortLeaderboard()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Nepotřebujeme implementovat v této aplikaci
+                // Nepotřebujeme implementovat
             }
         }
     }
@@ -207,6 +214,4 @@ class LeaderboardActivity : AppCompatActivity() {
         leaderboardAdapter = LeaderboardAdapter(users)
         recyclerView.adapter = leaderboardAdapter
     }
-
-
 }

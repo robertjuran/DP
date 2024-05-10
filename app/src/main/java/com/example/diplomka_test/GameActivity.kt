@@ -58,18 +58,23 @@ class GameActivity : AppCompatActivity() {
         lightRandomButton()
     }
 
+    // Vytvořen matice
     private fun createMatrix(matrixSize: Int) {
         val gridLayout: GridLayout = findViewById(R.id.gridLayout)
         gridLayout.removeAllViews()
         gridLayout.columnCount = matrixSize
         gridLayout.rowCount = matrixSize
 
+        // Získáme velikost displeje v pixelech
         val screenWidth = resources.displayMetrics.widthPixels
         val screenHeight = resources.displayMetrics.heightPixels
 
+        // Použijeme velikost displeje na velikost tlačítek (málo = velký, hodně = malý)
+        // - 40 jako rezerva
         val buttonWidth = ((screenWidth - 40) / matrixSize )
         val buttonHeight = ((screenHeight - 40) / matrixSize )
 
+        // Vytvoření tlačítek
         buttons = Array(matrixSize) { row ->
             Array(matrixSize) { col ->
                 MyButton(this, row, col).apply {
@@ -205,29 +210,4 @@ object DataManager {
             e.printStackTrace()
         }
     }
-
-    /*
-    fun loadResultsFromFile(context: Context): List<UserResult> {
-        val results = mutableListOf<UserResult>()
-        try {
-            context.openFileInput(FILENAME).bufferedReader().useLines { lines ->
-                lines.forEach { line ->
-                    val parts = line.split(",")
-                    if (parts.size == 4) {
-                        val userName = parts[0]
-                        val totalAttempts = parts[1].toInt()
-                        val successfulAttempts = parts[2].toInt()
-                        val averageSpeed = parts[3].toLong()
-                        results.add(UserResult(userName, totalAttempts, successfulAttempts, averageSpeed))
-                    }
-                }
-            }
-        } catch (e: FileNotFoundException) {
-            // Pokud soubor neexistuje, není co načítat
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return results
-    }
-     */
 }
