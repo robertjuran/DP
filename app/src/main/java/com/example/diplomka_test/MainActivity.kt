@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
         setContentView(R.layout.activity_main)
 
+        // Tlačítka pro start obtížnosti
         val startButtonEasy: Button = findViewById(R.id.startButtonEasy)
         startButtonEasy.setOnClickListener {
             startGame(3)
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    // Fce pro start hry
     private fun startGame(matrixSize: Int) {
         val intent = Intent(this, GameActivity::class.java)
         intent.putExtra("MATRIX_SIZE", matrixSize)

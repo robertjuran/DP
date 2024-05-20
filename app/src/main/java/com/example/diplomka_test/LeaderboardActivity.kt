@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import java.io.FileNotFoundException
 import android.widget.Toast
 import android.widget.ArrayAdapter
@@ -69,7 +69,7 @@ class LeaderboardActivity : AppCompatActivity() {
     }
 
 
-    / Fce pro zobrazení všech výsledků
+    // Fce pro zobrazení všech výsledků
     private fun loadAllUsers() {
         val users = loadUsersFromStorage()
         leaderboardAdapter = LeaderboardAdapter(users)
@@ -82,6 +82,19 @@ class LeaderboardActivity : AppCompatActivity() {
         leaderboardAdapter = LeaderboardAdapter(users)
         recyclerView.adapter = leaderboardAdapter
     }
+
+    // Fce pro vymazání obsahu .txt s výsledky
+    private fun clearResults() {
+        val fileName = "user_results.txt"
+        try {
+            applicationContext.deleteFile(fileName)
+            Toast.makeText(this, "Výsledky byly úspěšně smazány.", Toast.LENGTH_SHORT).show()
+            loadAllUsers()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Nastala chyba při mazání výsledků.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     // Fce pro načtení výsledků z .txt
     private fun loadUsersFromStorage(): List<User> {
@@ -105,18 +118,6 @@ class LeaderboardActivity : AppCompatActivity() {
             // Soubor neexistuje nebo je prázdný
         }
         return users
-    }
-
-    // Fce pro vymazání obsahu .txt s výsledky
-    private fun clearResults() {
-        val fileName = "user_results.txt"
-        try {
-            applicationContext.deleteFile(fileName)
-            Toast.makeText(this, "Výsledky byly úspěšně smazány.", Toast.LENGTH_SHORT).show()
-            loadAllUsers()
-        } catch (e: Exception) {
-            Toast.makeText(this, "Nastala chyba při mazání výsledků.", Toast.LENGTH_SHORT).show()
-        }
     }
 
 
@@ -145,7 +146,6 @@ class LeaderboardActivity : AppCompatActivity() {
                 itemView.findViewById<TextView>(R.id.averageSpeedTextView).text = "Průměrný čas: ${user.averageSpeed} ms"
             }
         }
-
     }
 
     // Enum třída pro možné hodnoty řazení

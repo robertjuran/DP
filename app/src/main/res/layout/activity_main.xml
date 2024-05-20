@@ -20,17 +20,17 @@
         android:layout_height="wrap_content"
         android:textSize="25sp"
         android:text="Vyberte obtížnost:"
-        android:layout_below="@id/nadpisTextView"
+        android:layout_below="@+id/pokusyEditText"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="64dp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/obtiznostTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp">
+        android:layout_marginBottom="32dp"
+        android:layout_below="@id/obtiznostTextView">
 
         <Button
             android:id="@+id/startButtonEasy"
@@ -59,17 +59,17 @@
             android:padding="10dp"/>
 
     </LinearLayout>
+
     <EditText
         android:id="@+id/userNameEditText"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Zadejte své jméno"
         android:inputType="text"
         android:textSize="24sp"
-        android:layout_above="@+id/pokusyEditText"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/nadpisTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="512dp"
+        android:layout_marginTop="32dp"
         android:gravity="center_horizontal"/>
 
     <EditText
@@ -79,10 +79,9 @@
         android:inputType="number"
         android:hint="Zde zadejte počet pokusů (výchozí je 10)"
         android:textSize="24sp"
-        android:layout_above="@+id/showLeaderboardButton"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/userNameEditText"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="320dp"
+        android:layout_marginTop="32dp"
         android:gravity="center_horizontal"/>
 
     <Button
@@ -93,7 +92,7 @@
         android:text="Zobrazit žebříček"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="256dp"
+        android:layout_marginBottom="128dp"
         android:gravity="center_horizontal"/>
 
     <!-- Upozornění -->

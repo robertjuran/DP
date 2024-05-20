@@ -17,7 +17,7 @@ import java.io.*
 class GameActivity : AppCompatActivity() {
 
     companion object {
-        const val MATRIX_SIZE = 5
+        const val MATRIX_SIZE = 5   // Už posílaná z MainActivity
         const val DEFAULT_MAX_ATTEMPTS = 10
     }
 
@@ -36,7 +36,9 @@ class GameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Skrytí "status baru"
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        // Skrytí "action baru"
         supportActionBar?.hide()
         setContentView(R.layout.activity_game)
 

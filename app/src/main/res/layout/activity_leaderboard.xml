@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Vymazat výsledky"
-        android:layout_below="@id/buttonContainer"
+        android:layout_below="@+id/recyclerView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"/>
 
@@ -62,8 +62,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/clearButton"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonContainer"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:clipToPadding="false"
