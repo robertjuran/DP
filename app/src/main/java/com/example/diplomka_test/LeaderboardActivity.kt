@@ -202,13 +202,6 @@ class LeaderboardActivity : AppCompatActivity() {
                 SortByOption.SUCCESSFUL_ATTEMPTS -> -it.successfulAttempts
                 SortByOption.AVERAGE_SPEED -> it.averageSpeed
             }
-        }.thenBy {
-            when (currentSortOption) {
-                SortByOption.USER_NAME -> ""
-                SortByOption.TOTAL_ATTEMPTS -> 0
-                SortByOption.SUCCESSFUL_ATTEMPTS -> 0
-                SortByOption.AVERAGE_SPEED -> -it.averageSpeed
-            }
         })
 
         leaderboardAdapter = LeaderboardAdapter(users)
