@@ -70,6 +70,8 @@ dependencies {
     //Pridane dependencies
     implementation ("androidx.appcompat:appcompat:1.4.1")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.3")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.0.3")
 
 
 

@@ -12,6 +12,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
 import java.io.*
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 
 
 class GameActivity : AppCompatActivity() {
@@ -27,6 +31,9 @@ class GameActivity : AppCompatActivity() {
     private var litButton: MyButton? = null
     private var maxAttempts = 0
     private lateinit var userName: String
+
+    private val clickTimes = mutableListOf<Long>()
+
 
     // Časové proměnné pro měření času mezi kliknutími
     private var startTime: Long = 0
@@ -119,7 +126,11 @@ class GameActivity : AppCompatActivity() {
 
         // Získání času mezi kliknutími a aktualizace celkového času a počtu kliknutí
         val currentTime = SystemClock.elapsedRealtime()
-        totalTime += if (clickCount > 0) currentTime - startTime else 0
+        if (clickCount > 0) {
+            val reactionTime = currentTime - startTime
+            totalTime += reactionTime
+            clickTimes.add(reactionTime)
+        }
         clickCount++
         startTime = currentTime
 
@@ -133,6 +144,17 @@ class GameActivity : AppCompatActivity() {
     private fun removeMatrix() {
         val gridLayout: GridLayout = findViewById(R.id.gridLayout)
         gridLayout.removeAllViews()
+    }
+
+    private fun showReactionTimeChart() {
+        val chart: LineChart = findViewById(R.id.reactionTimeChart)
+        val entries = clickTimes.mapIndexed {index, time -> Entry(index.toFloat(), time.toFloat())}
+
+        val dataSet = LineDataSet(entries, "Reaction Times")
+        val lineData = LineData(dataSet)
+
+        chart.data = lineData
+        chart.invalidate() // Refresh grafu
     }
 
     private fun endGame() {
@@ -152,6 +174,14 @@ class GameActivity : AppCompatActivity() {
         // Uložení výsledku do souboru
         val userResult = DataManager.UserResult(userName, matrixSize, totalAttempts, successfulAttempts, averageTimePerClick.toLong())
         DataManager.saveResultToFile(userResult, this) // Předáváme aktuální kontext
+
+        // Zobrazí graf reakčních časů
+        val reactionChart = findViewById<LineChart>(R.id.reactionTimeChart)
+        reactionChart.visibility = View.VISIBLE
+        showReactionTimeChart()
+        // Nastavení popisku grafu
+        reactionChart.getDescription().setText("Reakční čas/Pokusy");
+
         val endButton: Button = findViewById(R.id.endButton)
         endButton.text = "Zpět na menu"
         endButton.visibility = View.VISIBLE
@@ -159,6 +189,7 @@ class GameActivity : AppCompatActivity() {
             returnToMenu()
         }
     }
+
 
 
     private fun returnToMenu() {
@@ -212,4 +243,6 @@ object DataManager {
             e.printStackTrace()
         }
     }
+
+
 }

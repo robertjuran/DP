@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Diplomka_test</string>
+    <string name="app_name">Měření přesnosti</string>
 
     <string-array name="sort_options">
         <item>Jména</item>

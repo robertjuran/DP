@@ -34,7 +34,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
-        android:visibility="gone"/> // Nastavíme tlačítko na "gone", aby nám nezavazelo v matici (po ukončení hry se zobrazí)
+        android:visibility="gone"/>
+    <!--Nastavíme tlačítko na "gone", aby nám nezavazelo v matici (po ukončení hry se zobrazí)-->
 
     <TextView
         android:id="@+id/averageTimeTextView"
@@ -56,6 +57,15 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"/>
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/reactionTimeChart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_above="@id/endButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"/>
+    <!--Nastaven na gone, jinak v průběhu hlásí absenci dat-->
 
 
 </RelativeLayout>
